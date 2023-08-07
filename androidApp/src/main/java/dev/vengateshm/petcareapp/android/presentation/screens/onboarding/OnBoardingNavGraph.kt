@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 
-fun NavGraphBuilder.onBoardingNavGraph(navController: NavController) {
+fun NavGraphBuilder.onBoardingNavGraph(navController: NavController, isLoggedIn: Boolean) {
     navigation(
         route = "onboarding",
         startDestination = "sSplash"
@@ -15,13 +15,29 @@ fun NavGraphBuilder.onBoardingNavGraph(navController: NavController) {
         ) {
             SplashScreen(
                 onTimeOut = {
-                    navController.navigate("sWelcome")
+                    if (isLoggedIn)
+                        navController.navigate("main") {
+                            popUpTo("onboarding")
+                        }
+                    else
+                        navController.navigate("sWelcome")
                 })
         }
         composable(
             route = "sWelcome"
         ) {
-            WelcomeScreen()
+            WelcomeScreen(
+                onSignInClicked = {
+                    navController.navigate("login") {
+                        popUpTo(route = "onboarding")
+                    }
+                },
+                onGetStartedClicked = {
+                    navController.navigate("signup_landing") {
+                        popUpTo(route = "onboarding")
+                    }
+                }
+            )
         }
     }
 }

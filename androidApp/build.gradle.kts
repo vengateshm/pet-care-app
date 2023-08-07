@@ -50,7 +50,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3:1.2.0-alpha04")
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
+    implementation("io.insert-koin:koin-androidx-compose:3.4.1")
     implementation("androidx.navigation:navigation-compose:2.6.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
 }
