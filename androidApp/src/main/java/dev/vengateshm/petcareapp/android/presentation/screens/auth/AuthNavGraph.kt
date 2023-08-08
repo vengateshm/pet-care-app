@@ -1,5 +1,6 @@
 package dev.vengateshm.petcareapp.android.presentation.screens.auth
 
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -13,6 +14,10 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
                     navController.navigate("home") {
                         popUpTo(route = "auth")
                     }
+                },
+                onSignUpClicked = {
+                    NavBackStackEntry
+                    navController.navigate("signup_landing")
                 }
             )
         }
@@ -22,6 +27,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
                     navController.navigate("signup")
                 },
                 onSignInClicked = {
+                    navController.navigate("login")
+                },
+                onSignedUp = {
                     navController.navigate("login")
                 }
             )

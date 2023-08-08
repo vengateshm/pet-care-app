@@ -1,6 +1,7 @@
 package dev.vengateshm.petcareapp.data.remote
 
 import dev.vengateshm.petcareapp.data.remote.models.SignupDto
+import dev.vengateshm.petcareapp.data.remote.models.request.GoogleSignupRequest
 import dev.vengateshm.petcareapp.data.remote.models.request.LoginRequest
 import dev.vengateshm.petcareapp.data.remote.models.request.SignupRequest
 import dev.vengateshm.petcareapp.data.remote.models.response.SignupResponse
@@ -27,13 +28,8 @@ class AuthRemoteDataSourceImpl(
                 endPoint("api/v1/auth/login")
                 setBody(LoginRequest(email = email, password = password))
             }.body<TokenResponse?>()
-
             if (response != null && response.token.isNotEmpty()) {
-                preferenceProvider.putString(KEY_TOKEN, response.token)
-                if (response.user != null) {
-                    preferenceProvider.putString(KEY_USER, Json.encodeToString(response.user))
-                    preferenceProvider.putString(KEY_USER_NAME, response.user.name ?: "")
-                }
+                saveLoginData(response)
                 return true
             } else return false
         } catch (e: Exception) {
@@ -47,5 +43,36 @@ class AuthRemoteDataSourceImpl(
             setBody(SignupRequest(name = name, email = email, password = password))
         }.body<SignupResponse>()
         return response.data
+    }
+
+    override suspend fun signupWithGoogle(idToken: String): SignupDto {
+        val response = client.httpClient.post {
+            endPoint("api/v1/auth/signup-google")
+            setBody(GoogleSignupRequest(idToken = idToken))
+        }.body<SignupResponse>()
+        return response.data
+    }
+
+    override suspend fun signinWithGoogle(idToken: String): Boolean {
+        return try {
+            val response = client.httpClient.post {
+                endPoint("api/v1/auth/signin-google")
+                setBody(GoogleSignupRequest(idToken = idToken))
+            }.body<TokenResponse?>()
+            if (response != null && response.token.isNotEmpty()) {
+                saveLoginData(response)
+                return true
+            } else return false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun saveLoginData(response: TokenResponse) {
+        preferenceProvider.putString(KEY_TOKEN, response.token)
+        if (response.user != null) {
+            preferenceProvider.putString(KEY_USER, Json.encodeToString(response.user))
+            preferenceProvider.putString(KEY_USER_NAME, response.user.name ?: "")
+        }
     }
 }

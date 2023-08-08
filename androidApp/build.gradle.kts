@@ -56,4 +56,6 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.4.1")
     implementation("androidx.navigation:navigation-compose:2.6.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
 }

@@ -1,14 +1,22 @@
 package dev.vengateshm.petcareapp.android.presentation.screens.auth
 
+import android.app.Activity
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -22,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,18 +41,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import dev.vengateshm.petcareapp.android.R
 import dev.vengateshm.petcareapp.android.presentation.screens.composables.ActionButtonPrimary
+import dev.vengateshm.petcareapp.android.presentation.screens.composables.GoogleSignInManager
+import dev.vengateshm.petcareapp.android.presentation.screens.composables.rememberGoogleSignInManagerState
+import dev.vengateshm.petcareapp.android.ui.theme.Button1
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
     onLoggedIn: () -> Unit,
+    onSignUpClicked: () -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -58,6 +81,38 @@ fun LoginScreen(
         }
     }
 
+    var isGoogleSignInProgress by remember { mutableStateOf(false) }
+
+    val activity = LocalContext.current as Activity
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    isGoogleSignInProgress = false
+                }
+
+                else -> Log.i("OBSERVER", "Lifecycle: ${event.name}")
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    val signInManagerState = rememberGoogleSignInManagerState()
+    GoogleSignInManager(
+        state = signInManagerState,
+        onComplete = {
+            isGoogleSignInProgress = false
+        },
+        onIdToken = { idToken ->
+            viewModel.signinWithGoogle(idToken)
+        }
+    )
+
     LoginScreenContent(
         uiState = { uiState },
         email = { email },
@@ -70,6 +125,13 @@ fun LoginScreen(
         },
         onSignInClicked = {
             viewModel.login(email, password)
+        },
+        onGoogleSignInClicked = {
+            isGoogleSignInProgress = true
+            signInManagerState.startSignIn = true
+        },
+        onSignUpClicked = {
+            onSignUpClicked()
         }
     )
 }
@@ -82,6 +144,8 @@ fun LoginScreenContent(
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onSignInClicked: () -> Unit,
+    onGoogleSignInClicked: () -> Unit,
+    onSignUpClicked: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -183,6 +247,52 @@ fun LoginScreenContent(
                     onClick = { onSignInClicked() },
                     buttonText = { "Sign In" })
             }
+            Spacer(modifier = Modifier.height(48.dp))
+            Text(
+                text = "or continue with",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clickable { },
+                    painter = painterResource(id = R.drawable.fb_signin),
+                    contentDescription = null,
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clickable {
+                            onGoogleSignInClicked()
+                        },
+                    painter = painterResource(id = R.drawable.google_signin),
+                    contentDescription = null,
+                )
+            }
+            Spacer(modifier = Modifier.weight(weight = 1f))
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onSignUpClicked()
+                    }
+                    .padding(vertical = 16.dp),
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = Color.Black)) {
+                        append("Don't have an account yet?")
+                    }
+                    withStyle(style = SpanStyle(color = Button1)) {
+                        append("Registration")
+                    }
+                },
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }
@@ -196,6 +306,8 @@ fun LoginScreenPreview() {
         password = { "" },
         onEmailChanged = {},
         onPasswordChanged = {},
-        onSignInClicked = {}
+        onSignInClicked = {},
+        onGoogleSignInClicked = {},
+        onSignUpClicked = {}
     )
 }

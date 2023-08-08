@@ -2,6 +2,7 @@ package dev.vengateshm.petcareapp.android.di
 
 import dev.vengateshm.petcareapp.AndroidPreferenceProviderImpl
 import dev.vengateshm.petcareapp.android.presentation.screens.auth.LoginViewModel
+import dev.vengateshm.petcareapp.android.presentation.screens.auth.SignupLandingViewModel
 import dev.vengateshm.petcareapp.android.presentation.screens.auth.SignupViewModel
 import dev.vengateshm.petcareapp.android.presentation.screens.home.HomeViewModel
 import dev.vengateshm.petcareapp.data.remote.AuthRemoteDataSourceImpl
@@ -24,6 +25,7 @@ val viewModelModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { SignupViewModel(get()) }
     viewModel { HomeViewModel(get(), get()) }
+    viewModel { SignupLandingViewModel(get()) }
 }
 
 val useCaseModule = module {

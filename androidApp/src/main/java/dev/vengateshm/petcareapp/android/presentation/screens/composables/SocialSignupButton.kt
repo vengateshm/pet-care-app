@@ -1,6 +1,7 @@
 package dev.vengateshm.petcareapp.android.presentation.screens.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -31,10 +32,18 @@ import androidx.compose.ui.unit.sp
 import dev.vengateshm.petcareapp.android.ui.theme.Button1
 
 @Composable
-fun ColumnScope.SocialSignupButton(modifier: Modifier = Modifier, icon: ImageVector, name: String) {
+fun ColumnScope.SocialSignupButton(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    name: String,
+    onClicked: () -> Unit,
+) {
     Row(
         modifier
             .fillMaxWidth()
+            .clickable {
+                onClicked()
+            }
             .background(color = Color.White, shape = RoundedCornerShape(25.dp))
             .padding(8.dp),
         horizontalArrangement = Arrangement.Center,
@@ -75,7 +84,8 @@ fun SocialSignupButtonPreview() {
     ) {
         SocialSignupButton(
             icon = Icons.Rounded.Facebook,
-            name = "Facebook"
+            name = "Facebook",
+            onClicked = {}
         )
     }
 }

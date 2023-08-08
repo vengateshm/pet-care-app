@@ -12,4 +12,12 @@ class AuthRepositoryImpl(private val authDataSource: AuthDataSource) : AuthRepos
     override suspend fun signup(name: String, email: String, password: String): AppUser {
         return authDataSource.signup(name, email, password).mapToAppUser()
     }
+
+    override suspend fun signupWithGoogle(idToken: String): AppUser {
+        return authDataSource.signupWithGoogle(idToken).mapToAppUser()
+    }
+
+    override suspend fun signinWithGoogle(idToken: String): Boolean {
+        return authDataSource.signinWithGoogle(idToken)
+    }
 }

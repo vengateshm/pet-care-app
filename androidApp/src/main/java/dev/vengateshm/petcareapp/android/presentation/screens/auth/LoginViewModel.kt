@@ -31,6 +31,15 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
             uiState = uiState.copy(isLoading = false, isLoggedIn = result)
         }
     }
+
+    fun signinWithGoogle(idToken: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            uiState = uiState.copy(isLoading = true)
+            val result = loginUseCase.signinWithGoogle(idToken)
+            uiState =
+                uiState.copy(isLoading = false, isLoggedIn = result)
+        }
+    }
 }
 
 data class LoginUiState(
