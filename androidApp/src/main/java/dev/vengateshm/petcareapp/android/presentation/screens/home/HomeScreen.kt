@@ -77,9 +77,11 @@ fun HomeScreenContent(uiState: () -> HomeScreenState) {
                 fontSize = welcomeTextSize,
                 color = Color(0xFFFFCF6F),
                 modifier = Modifier.constrainAs(thirdText) {
-                    top.linkTo(secondText.top)
+                    /*top.linkTo(secondText.top)
                     start.linkTo(secondText.end, margin = 16.dp)
-                    end.linkTo(parent.end)
+                    end.linkTo(parent.end)*/
+                    top.linkTo(secondText.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
                 }
             )
         }

@@ -12,3 +12,8 @@ val Pink40 = Color(0xFF7D5260)
 
 val Button1 = Color(0xFF4552CB)
 val ScreenBg = Color(0xFFFCFCFF)
+
+val AppBlue = Color(0xFF4552CB)
+val BottomBarContainer = Color(0xFFFCFCFF)
+val ProfileMenuIconBg = Color(0xFFDDDEF4)
+val MenuArrowRight = Color(0xFFBBC3CE)

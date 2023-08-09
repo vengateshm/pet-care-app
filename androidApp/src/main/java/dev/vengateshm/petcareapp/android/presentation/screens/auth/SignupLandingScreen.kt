@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import dev.vengateshm.petcareapp.android.presentation.screens.composables.GoogleIcon
+import dev.vengateshm.petcareapp.android.presentation.imageVectors.GoogleIcon
 import dev.vengateshm.petcareapp.android.presentation.screens.composables.GoogleSignInManager
 import dev.vengateshm.petcareapp.android.presentation.screens.composables.SocialSignupButton
 import dev.vengateshm.petcareapp.android.presentation.screens.composables.rememberGoogleSignInManagerState

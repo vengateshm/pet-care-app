@@ -5,8 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import dev.vengateshm.petcareapp.android.presentation.screens.AppScreen
 import dev.vengateshm.petcareapp.android.presentation.screens.auth.authNavGraph
-import dev.vengateshm.petcareapp.android.presentation.screens.home.homeNavGraph
+import dev.vengateshm.petcareapp.android.presentation.screens.main_landing.mainLandingGraph
 import dev.vengateshm.petcareapp.android.presentation.screens.onboarding.onBoardingNavGraph
 import dev.vengateshm.petcareapp.android.ui.theme.PetCareAppTheme
 import dev.vengateshm.petcareapp.platform.PreferenceProvider
@@ -26,11 +27,11 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = "onboarding"
+                    startDestination = AppScreen.Onboarding.route
                 ) {
                     onBoardingNavGraph(navController = navController, isLoggedIn)
                     authNavGraph(navController = navController)
-                    homeNavGraph(navController = navController)
+                    mainLandingGraph()
                 }
             }
         }

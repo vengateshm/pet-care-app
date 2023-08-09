@@ -5,40 +5,43 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import dev.vengateshm.petcareapp.android.presentation.screens.AppScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
-    navigation(route = "auth", startDestination = "login") {
-        composable(route = "login") {
+    navigation(
+        route = AppScreen.Auth.route,
+        startDestination = AppScreen.Auth.SignIn.route) {
+        composable(route = AppScreen.Auth.SignIn.route) {
             LoginScreen(
                 onLoggedIn = {
-                    navController.navigate("home") {
-                        popUpTo(route = "auth")
+                    navController.navigate(AppScreen.MainLanding.route) {
+                        popUpTo(route = AppScreen.Auth.route)
                     }
                 },
                 onSignUpClicked = {
                     NavBackStackEntry
-                    navController.navigate("signup_landing")
+                    navController.navigate(AppScreen.Auth.SignUpLanding.route)
                 }
             )
         }
-        composable(route = "signup_landing") {
+        composable(route = AppScreen.Auth.SignUpLanding.route) {
             SignupLandingScreen(
                 onRegisterWithEmailClicked = {
-                    navController.navigate("signup")
+                    navController.navigate(AppScreen.Auth.SignUp.route)
                 },
                 onSignInClicked = {
-                    navController.navigate("login")
+                    navController.navigate(AppScreen.Auth.SignIn.route)
                 },
                 onSignedUp = {
-                    navController.navigate("login")
+                    navController.navigate(AppScreen.Auth.SignIn.route)
                 }
             )
         }
-        composable(route = "signup") {
+        composable(route = AppScreen.Auth.SignUp.route) {
             SignupScreen(
                 onSignedUp = {
                     navController.popBackStack()
-                    navController.navigate("login")
+                    navController.navigate(AppScreen.Auth.SignIn.route)
                 }
             )
         }
