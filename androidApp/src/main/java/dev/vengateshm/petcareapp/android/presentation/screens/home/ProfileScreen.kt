@@ -1,6 +1,7 @@
 package dev.vengateshm.petcareapp.android.presentation.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,23 +27,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.vengateshm.petcareapp.android.presentation.imageVectors.ArrowRight
 import dev.vengateshm.petcareapp.android.presentation.imageVectors.InviteFriends
 import dev.vengateshm.petcareapp.android.presentation.imageVectors.MyPetsIcon
+import dev.vengateshm.petcareapp.android.presentation.screens.AppScreen
 import dev.vengateshm.petcareapp.android.ui.theme.AppBlue
 import dev.vengateshm.petcareapp.android.ui.theme.MenuArrowRight
 import dev.vengateshm.petcareapp.android.ui.theme.ProfileMenuIconBg
 import dev.vengateshm.petcareapp.android.ui.theme.ScreenBg
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProfileScreen() {
-    ProfileScreenContent()
+fun ProfileScreen(
+    navController: NavController,
+    viewModel: ProfileViewModel = koinViewModel(),
+) {
+    ProfileScreenContent(
+        userName = {
+            viewModel.userName
+        }, navigateToMyPets = {
+            navController.navigate(AppScreen.MyPetsScreen.route)
+        })
 }
 
 @Composable
-fun ProfileScreenContent() {
+fun ProfileScreenContent(userName: () -> String, navigateToMyPets: () -> Unit) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -84,21 +96,31 @@ fun ProfileScreenContent() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Username",
+                text = userName(),
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
-        ProfileMenu(title = "My pets", icon = MyPetsIcon)
-        ProfileMenu(title = "Invite friends", icon = InviteFriends)
+        ProfileMenu(title = "My pets", icon = MyPetsIcon,
+            onClicked = {
+                navigateToMyPets()
+            })
+        ProfileMenu(title = "Invite friends", icon = InviteFriends,
+            onClicked = {})
     }
 }
 
 @Composable
-fun ProfileMenu(title: String, icon: ImageVector) {
+fun ProfileMenu(
+    title: String, icon: ImageVector,
+    onClicked: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onClicked()
+            }
             .padding(
                 horizontal = 16.dp,
                 vertical = 8.dp

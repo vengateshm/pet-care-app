@@ -27,4 +27,7 @@ sealed class AppScreen(val route: String) {
 
         object Main : MainLanding("main")
     }
+
+    object AddPetDetail : AppScreen("add_pet_detail")
+    object MyPetsScreen : AppScreen("my_pets")
 }

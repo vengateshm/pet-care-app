@@ -4,7 +4,6 @@ import dev.vengateshm.petcareapp.data.remote.models.SignupDto
 import dev.vengateshm.petcareapp.data.remote.models.request.GoogleSignupRequest
 import dev.vengateshm.petcareapp.data.remote.models.request.LoginRequest
 import dev.vengateshm.petcareapp.data.remote.models.request.SignupRequest
-import dev.vengateshm.petcareapp.data.remote.models.response.SignupResponse
 import dev.vengateshm.petcareapp.data.remote.models.response.TokenResponse
 import dev.vengateshm.petcareapp.data.repository.AuthDataSource
 import dev.vengateshm.petcareapp.platform.PreferenceProvider
@@ -41,16 +40,16 @@ class AuthRemoteDataSourceImpl(
         val response = client.httpClient.post {
             endPoint("api/v1/auth/signup")
             setBody(SignupRequest(name = name, email = email, password = password))
-        }.body<SignupResponse>()
-        return response.data
+        }.body<SignupDto>()
+        return response
     }
 
     override suspend fun signupWithGoogle(idToken: String): SignupDto {
         val response = client.httpClient.post {
             endPoint("api/v1/auth/signup-google")
             setBody(GoogleSignupRequest(idToken = idToken))
-        }.body<SignupResponse>()
-        return response.data
+        }.body<SignupDto>()
+        return response
     }
 
     override suspend fun signinWithGoogle(idToken: String): Boolean {

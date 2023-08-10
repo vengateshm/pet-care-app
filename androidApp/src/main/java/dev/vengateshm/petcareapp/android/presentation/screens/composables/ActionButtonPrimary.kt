@@ -11,8 +11,10 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.vengateshm.petcareapp.android.ui.theme.Button1
+import dev.vengateshm.petcareapp.android.ui.theme.SecondaryBtn
 
 @Composable
 fun ColumnScope.ActionButtonPrimary(
@@ -35,6 +37,52 @@ fun ColumnScope.ActionButtonPrimary(
             color = contentColorFor(
                 Button1
             )
+        )
+    }
+}
+
+@Composable
+fun PrimaryButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    buttonText: () -> String,
+) {
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Button1),
+        shape = RoundedCornerShape(25.dp),
+        onClick = {
+            onClick()
+        }) {
+        Text(
+            text = buttonText(),
+            color = contentColorFor(
+                Button1
+            )
+        )
+    }
+}
+
+@Composable
+fun SecondaryButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    buttonText: () -> String,
+) {
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = SecondaryBtn),
+        shape = RoundedCornerShape(25.dp),
+        onClick = {
+            onClick()
+        }) {
+        Text(
+            text = buttonText(),
+            color = Color.Black
         )
     }
 }

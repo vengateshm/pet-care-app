@@ -1,6 +1,7 @@
 package dev.vengateshm.petcareapp.android.presentation.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,8 +27,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import dev.vengateshm.petcareapp.android.presentation.imageVectors.SearchIcon
+import dev.vengateshm.petcareapp.android.presentation.screens.AppScreen
+import dev.vengateshm.petcareapp.android.ui.theme.AppBlue
 import dev.vengateshm.petcareapp.android.ui.theme.ScreenBg
 import org.koin.androidx.compose.koinViewModel
 
@@ -34,17 +40,26 @@ val welcomeTextSize = 24.sp
 val gridSpacing = 2.dp
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
+fun HomeScreen(
+    viewModel: HomeViewModel = koinViewModel(),
+    navController: NavController,
+) {
     val uiState = viewModel.uiState
     HomeScreenContent(
         uiState = {
             uiState
-        }
+        },
+        onAddPetDetailClicked = { navController.navigate(AppScreen.AddPetDetail.route) },
+        onNoLaterClicked = {}
     )
 }
 
 @Composable
-fun HomeScreenContent(uiState: () -> HomeScreenState) {
+fun HomeScreenContent(
+    uiState: () -> HomeScreenState,
+    onAddPetDetailClicked: () -> Unit,
+    onNoLaterClicked: () -> Unit,
+) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -52,6 +67,22 @@ fun HomeScreenContent(uiState: () -> HomeScreenState) {
             .background(color = ScreenBg)
             .padding(16.dp)
     ) {
+
+        AddPetDetailBottomDialog(
+            onDismiss = { },
+            onAddPetDetailClicked = { onAddPetDetailClicked() },
+            onNoLaterClicked = { onNoLaterClicked() })
+
+        Icon(
+            modifier = Modifier
+                .clickable {
+
+                }
+                .align(Alignment.End),
+            imageVector = SearchIcon,
+            contentDescription = "Search Icon",
+            tint = AppBlue
+        )
         ConstraintLayout {
             val (firstText, secondText, thirdText) = createRefs()
             Text(
@@ -93,7 +124,7 @@ fun HomeScreenContent(uiState: () -> HomeScreenState) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(gridSpacing)
         ) {
-            items(uiState().servicesOfferedList) { item ->
+            items(uiState().appServiceList) { item ->
                 Column(
                     modifier = Modifier
                         .background(
