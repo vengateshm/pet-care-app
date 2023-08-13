@@ -34,6 +34,7 @@ import dev.vengateshm.petcareapp.android.presentation.imageVectors.SearchIcon
 import dev.vengateshm.petcareapp.android.presentation.screens.AppScreen
 import dev.vengateshm.petcareapp.android.ui.theme.AppBlue
 import dev.vengateshm.petcareapp.android.ui.theme.ScreenBg
+import dev.vengateshm.petcareapp.domain.entity.Specialization
 import org.koin.androidx.compose.koinViewModel
 
 val welcomeTextSize = 24.sp
@@ -43,68 +44,97 @@ val gridSpacing = 2.dp
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     navController: NavController,
+    navigateToSearchScreen: (Specialization) -> Unit,
 ) {
     val uiState = viewModel.uiState
+    val specializationDialogState = viewModel.specializationDialogState
     HomeScreenContent(
         uiState = {
             uiState
         },
-        onAddPetDetailClicked = { navController.navigate(AppScreen.AddPetDetail.route) },
-        onNoLaterClicked = {}
-    )
+        showSpecializationDialog = {
+            specializationDialogState.showDialog
+        },
+        specializationList = {
+            specializationDialogState.specializations
+        },
+        onSearchIconClicked = {
+            viewModel.getAllSpecializations()
+        },
+        onAddPetDetailClicked = {
+            navController.navigate(AppScreen.AddPetDetail.route)
+        },
+        onNoLaterClicked = {
+
+        },
+        onSpecialityDialogDismissed = {
+            viewModel.dismissSpecializationDialog()
+        },
+        onSpecialityItemClicked = {
+            navigateToSearchScreen(it)
+        })
 }
 
 @Composable
 fun HomeScreenContent(
     uiState: () -> HomeScreenState,
+    showSpecializationDialog: () -> Boolean,
+    specializationList: () -> List<Specialization>,
+    onSearchIconClicked: () -> Unit,
     onAddPetDetailClicked: () -> Unit,
     onNoLaterClicked: () -> Unit,
+    onSpecialityDialogDismissed: () -> Unit,
+    onSpecialityItemClicked: (Specialization) -> Unit,
 ) {
     val context = LocalContext.current
+
+    AddPetDetailBottomDialog(
+        onDismiss = { },
+        onAddPetDetailClicked = { onAddPetDetailClicked() },
+        onNoLaterClicked = { onNoLaterClicked() }
+    )
+
+    if (showSpecializationDialog()) {
+        SelectSpecialityBottomDialog(
+            specializationList = specializationList(),
+            onDismiss = { onSpecialityDialogDismissed() },
+            onItemClicked = {
+                onSpecialityItemClicked(it)
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = ScreenBg)
             .padding(16.dp)
     ) {
-
-        AddPetDetailBottomDialog(
-            onDismiss = { },
-            onAddPetDetailClicked = { onAddPetDetailClicked() },
-            onNoLaterClicked = { onNoLaterClicked() })
-
-        Icon(
-            modifier = Modifier
-                .clickable {
-
-                }
-                .align(Alignment.End),
+        Icon(modifier = Modifier
+            .clickable {
+                onSearchIconClicked()
+            }
+            .align(Alignment.End),
             imageVector = SearchIcon,
             contentDescription = "Search Icon",
-            tint = AppBlue
-        )
+            tint = AppBlue)
         ConstraintLayout {
             val (firstText, secondText, thirdText) = createRefs()
-            Text(
-                text = "What are you",
+            Text(text = "What are you",
                 fontSize = welcomeTextSize,
                 color = Color.Black,
                 modifier = Modifier.constrainAs(firstText) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
-                }
-            )
-            Text(
-                text = "looking for,",
+                })
+            Text(text = "looking for,",
                 fontSize = welcomeTextSize,
                 color = Color.Black,
                 modifier = Modifier.constrainAs(secondText) {
                     top.linkTo(firstText.bottom, margin = 16.dp)
                     start.linkTo(parent.start)
-                }
-            )
-            Text(
-                text = "${uiState().userName.ifEmpty { "" }}?",
+                })
+            Text(text = "${uiState().userName.ifEmpty { "" }}?",
                 fontSize = welcomeTextSize,
                 color = Color(0xFFFFCF6F),
                 modifier = Modifier.constrainAs(thirdText) {
@@ -113,8 +143,7 @@ fun HomeScreenContent(
                     end.linkTo(parent.end)*/
                     top.linkTo(secondText.bottom, margin = 16.dp)
                     start.linkTo(parent.start)
-                }
-            )
+                })
         }
         Spacer(modifier = Modifier.height(16.dp))
         LazyVerticalGrid(
@@ -128,16 +157,12 @@ fun HomeScreenContent(
                 Column(
                     modifier = Modifier
                         .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(16.dp)
+                            color = Color.White, shape = RoundedCornerShape(16.dp)
                         )
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(item.imgUrl)
-                            .crossfade(true)
+                        model = ImageRequest.Builder(context).data(item.imgUrl).crossfade(true)
                             .build(),
                         modifier = Modifier
                             .size(48.dp)
@@ -146,8 +171,7 @@ fun HomeScreenContent(
                         contentDescription = null
                     )
                     Text(
-                        text = item.name,
-                        fontSize = 12.sp
+                        text = item.name, fontSize = 12.sp
                     )
                 }
             }

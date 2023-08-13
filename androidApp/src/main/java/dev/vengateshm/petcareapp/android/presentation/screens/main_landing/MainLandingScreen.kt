@@ -11,7 +11,7 @@ import dev.vengateshm.petcareapp.android.presentation.screens.AppScreen
 import dev.vengateshm.petcareapp.android.presentation.screens.home.AppointmentsScreen
 import dev.vengateshm.petcareapp.android.presentation.screens.home.HomeScreen
 import dev.vengateshm.petcareapp.android.presentation.screens.home.ProfileScreen
-import dev.vengateshm.petcareapp.android.presentation.screens.pet.MyPetsScreen
+import dev.vengateshm.petcareapp.android.presentation.screens.home.SearchScreen
 import dev.vengateshm.petcareapp.android.presentation.screens.pet.PetDetailScreen
 
 @Composable
@@ -29,7 +29,10 @@ fun MainLandingScreen() {
         ) {
             composable(route = BottomNavScreen.Search.route) {
                 HomeScreen(
-                    navController = navController
+                    navController = navController,
+                    navigateToSearchScreen = { s ->
+                        navController.navigate(AppScreen.SearchScreen.routeWithArgs(s.id.toString()))
+                    }
                 )
             }
             composable(route = BottomNavScreen.Appointments.route) {
@@ -41,8 +44,11 @@ fun MainLandingScreen() {
             composable(route = AppScreen.AddPetDetail.route) {
                 PetDetailScreen()
             }
-            composable(route = AppScreen.MyPetsScreen.route) {
-                MyPetsScreen()
+
+            composable(route = AppScreen.SearchScreen.route) { entry ->
+                SearchScreen(
+                    specializationId = entry.arguments?.getString("specializationId") ?: ""
+                )
             }
         }
     }

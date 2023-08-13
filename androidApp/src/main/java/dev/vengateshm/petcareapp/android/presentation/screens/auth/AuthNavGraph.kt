@@ -10,7 +10,8 @@ import dev.vengateshm.petcareapp.android.presentation.screens.AppScreen
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(
         route = AppScreen.Auth.route,
-        startDestination = AppScreen.Auth.SignIn.route) {
+        startDestination = AppScreen.Auth.SignIn.route
+    ) {
         composable(route = AppScreen.Auth.SignIn.route) {
             LoginScreen(
                 onLoggedIn = {

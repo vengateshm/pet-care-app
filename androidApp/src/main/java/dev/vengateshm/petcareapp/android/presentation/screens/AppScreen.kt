@@ -30,4 +30,7 @@ sealed class AppScreen(val route: String) {
 
     object AddPetDetail : AppScreen("add_pet_detail")
     object MyPetsScreen : AppScreen("my_pets")
+    object SearchScreen : AppScreen("search/{specializationId}") {
+        fun routeWithArgs(arg: String) = "search/$arg"
+    }
 }

@@ -1,11 +1,12 @@
-package dev.vengateshm.petcareapp.data.remote
+package dev.vengateshm.petcareapp.data.remote.data_source
 
+import dev.vengateshm.petcareapp.data.remote.KtorApiClient
+import dev.vengateshm.petcareapp.data.remote.endPoint
 import dev.vengateshm.petcareapp.data.remote.models.SignupDto
 import dev.vengateshm.petcareapp.data.remote.models.request.GoogleSignupRequest
 import dev.vengateshm.petcareapp.data.remote.models.request.LoginRequest
 import dev.vengateshm.petcareapp.data.remote.models.request.SignupRequest
 import dev.vengateshm.petcareapp.data.remote.models.response.TokenResponse
-import dev.vengateshm.petcareapp.data.repository.AuthDataSource
 import dev.vengateshm.petcareapp.platform.PreferenceProvider
 import dev.vengateshm.petcareapp.platform.PreferenceProvider.Companion.KEY_TOKEN
 import dev.vengateshm.petcareapp.platform.PreferenceProvider.Companion.KEY_USER

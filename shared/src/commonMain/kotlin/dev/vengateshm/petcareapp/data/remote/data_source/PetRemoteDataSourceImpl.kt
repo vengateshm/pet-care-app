@@ -1,8 +1,9 @@
-package dev.vengateshm.petcareapp.data.remote
+package dev.vengateshm.petcareapp.data.remote.data_source
 
 import dev.vengateshm.petcareapp.data.loggedInUserId
+import dev.vengateshm.petcareapp.data.remote.KtorApiClient
+import dev.vengateshm.petcareapp.data.remote.endPoint
 import dev.vengateshm.petcareapp.data.remote.models.PetDto
-import dev.vengateshm.petcareapp.data.repository.PetDataSource
 import dev.vengateshm.petcareapp.platform.PreferenceProvider
 import io.ktor.client.call.body
 import io.ktor.client.request.get
